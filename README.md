@@ -25,7 +25,50 @@ Or install it yourself as:
 
 ## Usage
 
-TDB
+### Connect
+```ruby
+db = CassandraDB.connect hosts: ['localhost'], port: 9042, keyspace: 'system'
+```
+
+### Metadata
+```ruby
+db.keyspace # => :system
+
+db.keyspaces # => [:system, :system_traces]
+
+db.tables # => Array of table names in current keyspace
+```
+
+### Change keyspace
+```ruby
+db.use_keyspace 'my_keyspace'
+db.keyspace # => :my_keyspace
+```
+
+### Create and drop keyspaces
+```ruby
+replication_opts = {
+  class: 'SimpleStrategy',
+  replication_factor: 1
+}
+db.create_keyspace :my_keyspace, replication: replication_opts, durable_writes: true
+
+db.drop_keyspace :my_keyspace
+```
+
+### Queries
+```ruby
+dataset = db[table_name] # => CassandraDB::Dataset
+dataset = db[table_name].where(field: 'value') # => CassandraDB::Dataset
+```
+
+### Dataset/Enumerable methods
+```ruby
+dataset.count
+dataset.each
+dataset.map
+dataset.all
+```
 
 ## Contributing
 
