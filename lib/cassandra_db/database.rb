@@ -27,7 +27,7 @@ module CassandraDB
 
     def tables
       cluster.refresh_schema
-      cluster.keyspaces.detect { |k| k.name == session.keyspace }.tables.map { |t| t.name.to_sym }.sort
+      cluster.keyspace(session.keyspace).tables.map { |t| t.name.to_sym }.sort
     end
 
     def from(table)
