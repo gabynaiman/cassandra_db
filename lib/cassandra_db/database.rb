@@ -37,7 +37,7 @@ module CassandraDB
 
     def create_keyspace(name, replication:DEFAULT_REPLICATION, durable_writes:true)
       cql = %Q{
-        CREATE KEYSPACE #{name}
+        CREATE KEYSPACE "#{name}"
           WITH REPLICATION = #{JSON.dump(replication).gsub('"', '\'')}
           AND DURABLE_WRITES = #{durable_writes};
       }
@@ -45,7 +45,7 @@ module CassandraDB
     end
 
     def drop_keyspace(name)
-      execute "DROP KEYSPACE #{name};"
+      execute "DROP KEYSPACE \"#{name}\";"
     end
 
     def execute(*args)
