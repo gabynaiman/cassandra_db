@@ -7,7 +7,7 @@ module CassandraDB
       end
 
       def to_s
-        "#{cql}, #{options}"
+        "#{cql} #{options}"
       end
 
       private

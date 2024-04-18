@@ -5,6 +5,8 @@ module CassandraDB
       keyspace: DEFAULT_KEYSPACE
     }.freeze
 
+    DEFAULT_LOGGER = Logger.new '/dev/null'
+
     def initialize(options={})
       @options = DEFAULTS.merge(options)
       keyspace = @options.delete :keyspace
@@ -49,6 +51,7 @@ module CassandraDB
     end
 
     def execute(cql, options={})
+      logger.debug(self.class) { "#{cql} #{options.any? ? options : ''}".strip }
       session.execute cql, options
     end
 
@@ -59,6 +62,10 @@ module CassandraDB
     private
 
     attr_reader :cluster, :session, :options
+
+    def logger
+      @logger ||= options.fetch(:logger, DEFAULT_LOGGER)
+    end
 
   end
 end

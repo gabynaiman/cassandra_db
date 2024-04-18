@@ -1,5 +1,6 @@
 require 'cassandra'
 require 'json'
+require 'logger'
 
 module CassandraDB
 

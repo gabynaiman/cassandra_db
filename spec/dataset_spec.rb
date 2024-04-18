@@ -90,7 +90,7 @@ describe CassandraDB::Dataset do
   end
 
   it 'Inspect' do
-    assert_equal '#<CassandraDB::Dataset: SELECT * FROM countries, {:arguments=>{}}>', dataset.inspect
+    assert_equal '#<CassandraDB::Dataset: SELECT * FROM countries {:arguments=>{}}>', dataset.inspect
   end
 
 end
