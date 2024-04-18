@@ -31,7 +31,7 @@ module CassandraDB
     end
 
     def from(table)
-      Dataset.new self, from: table
+      Dataset.new self, table: table
     end
     alias_method :[], :from
 
@@ -48,8 +48,8 @@ module CassandraDB
       execute "DROP KEYSPACE \"#{name}\";"
     end
 
-    def execute(*args)
-      session.execute(*args)
+    def execute(cql, options={})
+      session.execute cql, options
     end
 
     def inspect

@@ -1,5 +1,6 @@
 require 'coverage_helper'
 require 'minitest/autorun'
 require 'minitest/colorin'
+require 'minitest/great_expectations'
 require 'pry-nav'
 require 'cassandra_db'

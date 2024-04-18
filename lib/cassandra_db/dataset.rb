@@ -3,22 +3,18 @@ module CassandraDB
 
     include Enumerable
 
-    def initialize(db, from:, where:[])
+    def initialize(db, table:, conditions:[])
       @db = db
-      @table = from
-      @conditions = where
+      @table = table
+      @conditions = conditions
     end
 
     def where(filters)
       new_conditions = filters.map do |field, value|
-        {
-          field: field,
-          operator: value.is_a?(Array) ? 'IN' : '=',
-          value: value
-        }
+        QueryCondition.new field, value
       end
 
-      Dataset.new db, from: table, where: conditions + new_conditions
+      Dataset.new db, table: table, conditions: conditions + new_conditions
     end
 
     def each(&block)
@@ -26,27 +22,34 @@ module CassandraDB
     end
 
     def all
-      db.execute(*cql).to_a
+      statement = Statements::Select.new table: table, conditions: conditions
+      result = db.execute statement.cql, statement.options
+      result.to_a
     end
 
-    def cql
-      select = 'SELECT *'
-      from = "FROM #{table}"
-      where = conditions.any? ? "WHERE #{conditions.map { |c| "#{c[:field]} #{c[:operator]} :#{c[:field]}" }.join(' AND ')}" : ''
-      arguments = conditions.each_with_object({}) { |c,h| h[c[:field]] = c[:value] }
+    def insert(attributes)
+      statement = Statements::Insert.new table: table, attributes: attributes
+      db.execute statement.cql, statement.options
+    end
 
-      [
-        "#{select} #{from} #{where}".strip,
-        {arguments: arguments}
-      ]
+    def update(attributes)
+      statement = Statements::Update.new table: table, attributes: attributes, conditions: conditions
+      db.execute statement.cql, statement.options
+    end
+
+    def delete
+      statement = Statements::Delete.new table: table, conditions: conditions
+      db.execute statement.cql, statement.options
     end
 
     def inspect
-      "#<#{self.class.name}: #{cql.join(', ')}>"
+      statement = Statements::Select.new table: table, conditions: conditions
+      "#<#{self.class.name}: #{statement.to_s}>"
     end
 
     private
 
     attr_reader :db, :table, :conditions
+
   end
 end
