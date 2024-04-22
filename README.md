@@ -70,6 +70,15 @@ dataset.map
 dataset.all
 ```
 
+### Insert, Update, Delete
+```ruby
+dataset.insert id: 1, name: 'Name 1'
+
+dataset.where(id: 1).update name: 'Name 2'
+
+dataset.where(id: 1).delete
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/gabynaiman/cassandra_db.
